@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>KRINOX SMM PANEL</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+
+body{
+margin:0;
+font-family:Arial;
+background:#0f172a;
+color:white;
+text-align:center;
+}
+
+header{
+background:linear-gradient(90deg,#6366f1,#9333ea);
+padding:20px;
+font-size:24px;
+font-weight:bold;
+}
+
+.container{
+padding:20px;
+}
+
+.card{
+background:#1e293b;
+padding:25px;
+border-radius:12px;
+margin:20px auto;
+max-width:350px;
+box-shadow:0 0 15px rgba(99,102,241,0.4);
+}
+
+.icon{
+font-size:40px;
+margin-bottom:10px;
+}
+
+button{
+padding:12px 20px;
+border:none;
+background:#22c55e;
+color:white;
+border-radius:6px;
+font-size:16px;
+cursor:pointer;
+}
+
+input{
+padding:12px;
+width:80%;
+margin:12px;
+border-radius:6px;
+border:none;
+font-size:16px;
+}
+
+.hidden{
+display:none;
+}
+
+.qr{
+width:90%;
+max-width:280px;
+border-radius:10px;
+margin-top:15px;
+}
+
+.box{
+background:#1e293b;
+padding:20px;
+border-radius:12px;
+max-width:350px;
+margin:auto;
+}
+
+.error{
+color:#ff4d4d;
+font-size:14px;
+}
+
+.popup{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.8);
+display:flex;
+justify-content:center;
+align-items:center;
+}
+
+.popup-box{
+background:#1e293b;
+padding:25px;
+border-radius:12px;
+max-width:300px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+KRINOX SMM PANEL
+</header>
+
+<div class="container">
+
+<div class="card">
+<div class="icon"></div>
+<h3>Instagram Followers</h3>
+<p>289 per 1000</p>
+<button onclick="selectService('Instagram Followers',289)">Order</button>
+</div>
+
+<div class="card">
+<div class="icon"></div>
+<h3>Instagram Likes</h3>
+<p>79 per 1000</p>
+<button onclick="selectService('Instagram Likes',79)">Order</button>
+</div>
+
+<div class="card">
+<div class="icon"></div>
+<h3>Instagram Views</h3>
+<p>20 per 1000</p>
+<button onclick="selectService('Instagram Views',20)">Order</button>
+</div>
+
+</div>
+
+<div id="orderSection" class="container hidden">
+
+<div class="box">
+
+<h2 id="serviceTitle"></h2>
+
+<p>Minimum Order: 100</p>
+
+<input type="number" id="qty" placeholder="Enter quantity" oninput="calculate()">
+
+<p class="error" id="error"></p>
+
+<h3>Total Price</h3>
+
+<h2><span id="price">0</span></h2>
+
+<button onclick="showSummary()">Continue</button>
+
+</div>
+
+</div>
+
+<div id="summarySection" class="container hidden">
+
+<div class="box">
+
+<h2>Order Summary</h2>
+
+<p><b>Service:</b> <span id="summaryService"></span></p>
+
+<p><b>Quantity:</b> <span id="summaryQty"></span></p>
+
+<p><b>Total Price:</b> <span id="summaryPrice"></span></p>
+
+<button onclick="goPayment()">Confirm Order</button>
+
+</div>
+
+</div>
+
+<div id="paymentSection" class="container hidden">
+
+<div class="box">
+
+<h2>Complete Payment</h2>
+
+<p>Amount to Pay</p>
+
+<h2><span id="finalAmount"></span></h2>
+
+<img src="qr.png" class="qr">
+
+<br><br>
+
+<button onclick="showPopup()">I Have Paid</button>
+
+</div>
+
+</div>
+
+<div id="popup" class="popup hidden">
+
+<div class="popup-box">
+
+<h3>Order Confirmation</h3>
+
+<p>
+Send your order quantity and payment screenshot to the owner to complete your order.
+</p>
+
+<a href="https://instagram.com/kriinox">
+
+<button>Send Screenshot</button>
+
+</a>
+
+<br><br>
+
+<button onclick="closePopup()">Close</button>
+
+</div>
+
+</div>
+
+<script>
+
+let pricePer1000 = 0
+let serviceName = ""
+
+function selectService(service,price){
+
+serviceName = service
+pricePer1000 = price
+
+document.getElementById("serviceTitle").innerText = service
+
+document.getElementById("orderSection").classList.remove("hidden")
+
+window.scrollTo(0,500)
+
+}
+
+function calculate(){
+
+let qty = document.getElementById("qty").value
+
+if(qty < 100){
+
+document.getElementById("error").innerText="Minimum order is 100"
+document.getElementById("price").innerText="0"
+return
+
+}
+
+document.getElementById("error").innerText=""
+
+let total = (qty/1000) * pricePer1000
+
+document.getElementById("price").innerText = total.toFixed(2)
+
+}
+
+function showSummary(){
+
+let qty = document.getElementById("qty").value
+
+if(qty < 100){
+
+alert("Minimum order is 100")
+return
+
+}
+
+let total = document.getElementById("price").innerText
+
+document.getElementById("summaryService").innerText = serviceName
+document.getElementById("summaryQty").innerText = qty
+document.getElementById("summaryPrice").innerText = total
+
+document.getElementById("summarySection").classList.remove("hidden")
+
+window.scrollTo(0,900)
+
+}
+
+function goPayment(){
+
+let amount = document.getElementById("summaryPrice").innerText
+
+document.getElementById("finalAmount").innerText = amount
+
+document.getElementById("paymentSection").classList.remove("hidden")
+
+window.scrollTo(0,1200)
+
+}
+
+function showPopup(){
+
+document.getElementById("popup").classList.remove("hidden")
+
+}
+
+function closePopup(){
+
+document.getElementById("popup").classList.add("hidden")
+
+}
+
+</script>
+
+</body>
+</html>
